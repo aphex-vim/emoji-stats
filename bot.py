@@ -4,14 +4,17 @@ desc bot that collects statistics based on emoji usage in participating server
 """
 import json
 import logging
+import re
 import discord
+
+logging.basicConfig(level=logging.INFO)
 
 class Client(discord.Client):
     def __init__(self):
         discord.Client.__init__(self)
 
     async def on_ready(self):
-        print("logged in as {0}".format(self.user))
+        logging.info("Logged in as {0}".format(self.user))
 
     async def on_message(self, message):
         
@@ -19,14 +22,21 @@ class Client(discord.Client):
         if message.author == client.user:
             return
 
+        #ignoring private messages
         if message.guild == None:
-            print("ignoring PM")
+            logging.info("Ignoring PM")
+
+        if re.match(r"<:(.*):([0-9]{18})>", message.content):
+            logging.info(message.content)
+        #need to account for two cases:
+        #   - unicode emoji (some unicode char)
+        #   - custom server emoji (string of format "<:emoji_name:unique_emoji_ID">) use regex?
 
 
 #init client object and starting the bot with secret token
 client = Client()
 
 with open("token", "r") as opened:
-    TOKEN = opened.read().strip()
+    TOKEN = opened.read()
 
 client.run(TOKEN)
