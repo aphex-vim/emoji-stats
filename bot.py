@@ -2,9 +2,7 @@
 auth spencer-maaaaan
 desc bot that collects statistics based on emoji usage in participating server
 """
-import json
-import logging
-import re
+import json, re, logging
 import discord
 
 logging.basicConfig(level=logging.INFO)
@@ -26,11 +24,15 @@ class Client(discord.Client):
         if message.guild == None:
             logging.info("Ignoring PM")
 
+        #if a custom emoji is in the string
         if re.match(r"<:(.*):([0-9]{18})>", message.content):
             logging.info(message.content)
-        #need to account for two cases:
+        
+        #it would be best if I traversed each message word by word
+        #then I could produce a subset of the message's words where every element is an emoji
+        
+        #I still need to account for one case:
         #   - unicode emoji (some unicode char)
-        #   - custom server emoji (string of format "<:emoji_name:unique_emoji_ID">) use regex?
 
 
 #init client object and starting the bot with secret token
