@@ -2,9 +2,7 @@
 auth spencer-maaaaan
 desc bot that collects statistics based on emoji usage in participating server
 """
-import json
-import logging
-import re
+import json, logging, re
 import discord
 
 logging.basicConfig(level=logging.INFO)
