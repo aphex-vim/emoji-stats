@@ -23,10 +23,11 @@ class Client(discord.Client):
         #ignoring private messages
         if message.guild == None:
             logging.info("Ignoring PM")
+            return
 
         #if a custom emoji is in the string
         if re.match(r"<:(.*):([0-9]{18})>", message.content):
-            logging.info(message.content)
+            logging.info("re match")
         
         #it would be best if I traversed each message word by word
         #then I could produce a subset of the message's words where every element is an emoji
