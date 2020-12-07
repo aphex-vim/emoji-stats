@@ -22,25 +22,21 @@ class Client(discord.Client):
 
     async def on_ready(self):
         logging.info("Logged in as {0}".format(self.user))
-            
-    async def on_message(self, message):
-        
-        #returning on bot's own messages
-        if message.author == client.user:
-            return
 
+
+    async def on_message(self, message):
         #ignoring private messages
         if message.guild == None:
             logging.info("Ignoring DM from {0}".format(message.author))
             return
         
-        #defining variables for later use
+        #defining some variables for later use
         emojilist = list()
         guildID = str(message.guild.id)
         custom_count = 0
         partial_count = 0
 
-        #checking for custom/parital emoji in message
+        #checking for custom/partial emoji in message
         custom_matches = re.findall(r"<:([0-9a-zA-Z]*):([0-9]{18})>", message.content)
         
         if custom_matches:
@@ -52,8 +48,9 @@ class Client(discord.Client):
                 partial_count += 1
                 emojilist.append(char)
 
-        logging.info("Message proccessed, {0} partials and {1} customs".format(partial_count, custom_count))
+        logging.info("Message proccessed in guild {0}, {1} partials and {2} customs".format(str(message.guild), partial_count, custom_count))
         
+        #going through each emoji in the message and updating counters
         for emoji in emojilist:
             emoji = str(emoji)
             if guildID in self.stats:
