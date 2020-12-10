@@ -12,10 +12,6 @@ class Client(discord.Client):
     def __init__(self):
         discord.Client.__init__(self)
         
-        #defining partial (non-custom) emoji list
-        with open("emoji.txt", "r", encoding = "utf-8") as f:
-            self.partials = [line.replace("\n", "") for line in f.readlines()]
-
         #loading json containing stats
         with open("stats.json", "r", encoding = "utf-8") as f:
             self.stats = json.load(f)
@@ -38,7 +34,7 @@ class Client(discord.Client):
         partial_count = 0
 
         #checking for custom/partial emoji in message
-        custom_matches = re.findall(r"<:([0-9a-zA-Z]*):([0-9]{18})>", message.content)
+        custom_matches = re.findall(r"<(a?):([0-9a-zA-Z]*):([0-9]{18})>", message.content)
         
         if custom_matches:
             custom_count += len(custom_matches)
@@ -66,7 +62,6 @@ class Client(discord.Client):
         
         with open("stats.json", "w", encoding = "utf-8") as f:
             f.write(json.dumps(self.stats, indent = 4))
-        
 
 #init client object and starting the bot with secret token
 client = Client()
