@@ -4,6 +4,7 @@ desc bot that collects statistics based on emoji usage in participating server
 """
 import json, re, logging
 import discord
+import emojis
 
 logging.basicConfig(level=logging.INFO)
 
@@ -43,10 +44,9 @@ class Client(discord.Client):
             custom_count += len(custom_matches)
             emojilist.extend(custom_matches)
                 
-        for char in message.content:
-            if char in self.partials:
+        for emoji in emojis.iter(message.content):
                 partial_count += 1
-                emojilist.append(char)
+                emojilist.append(emoji)
 
         logging.info("Message proccessed in guild {0}, {1} partials and {2} customs".format(str(message.guild), partial_count, custom_count))
         
