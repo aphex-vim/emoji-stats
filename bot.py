@@ -30,21 +30,20 @@ class Client(discord.Client):
         #defining some variables for later use
         emojilist = list()
         guildID = str(message.guild.id)
-        custom_count = 0
-        partial_count = 0
+        partial_matches = 0
 
         #checking for custom/partial emoji in message
         custom_matches = re.findall(r"<(a?):([0-9a-zA-Z]*):([0-9]{18})>", message.content)
         
         if custom_matches:
-            custom_count += len(custom_matches)
             emojilist.extend(custom_matches)
                 
         for emoji in emojis.iter(message.content):
-                partial_count += 1
+                partial_matches += 1
                 emojilist.append(emoji)
 
-        logging.info("Message proccessed in guild {0}, {1} partials and {2} customs".format(str(message.guild), partial_count, custom_count))
+        if custom_matches or partial_matches:
+            logging.info("Message proccessed in guild {0}, {1} partials and {2} customs".format(str(message.guild), partial_matches, len(custom_matches)))
         
         #going through each emoji in the message and updating counters
         for emoji in emojilist:
@@ -62,7 +61,7 @@ class Client(discord.Client):
         
         with open("stats.json", "w", encoding = "utf-8") as f:
             f.write(json.dumps(self.stats, indent = 4))
-
+        
 #init client object and starting the bot with secret token
 client = Client()
 
