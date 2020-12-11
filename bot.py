@@ -12,7 +12,7 @@ class Client(discord.Client):
     def __init__(self):
         discord.Client.__init__(self)
         
-        #loading json containing stats
+        #loading json containing stats to dictionary
         with open("stats.json", "r", encoding = "utf-8") as f:
             self.stats = json.load(f)
 
@@ -35,17 +35,19 @@ class Client(discord.Client):
         #checking for custom/partial emoji in message
         custom_matches = re.findall(r"<(a?):([0-9a-zA-Z]*):([0-9]{18})>", message.content)
         
-        if custom_matches:
+        if custom_matches: 
+            custom_matches = [i[1] for i in custom_matches]
             emojilist.extend(custom_matches)
                 
         for emoji in emojis.iter(message.content):
-                partial_matches += 1
-                emojilist.append(emoji)
+            partial_matches += 1
+            emoji = emojis.decode(emoji).replace(":", "")
+            emojilist.append(emoji)
 
-        if custom_matches or partial_matches:
+        if emojilist:
             logging.info("Message proccessed in guild {0}, {1} partials and {2} customs".format(str(message.guild), partial_matches, len(custom_matches)))
         
-        #going through each emoji in the message and updating counters
+        #going through each emoji in the message and updating dictionary
         for emoji in emojilist:
             emoji = str(emoji)
             if guildID in self.stats:
@@ -59,6 +61,7 @@ class Client(discord.Client):
             else:
                 self.stats[guildID] = {emoji: 1}
         
+        #dumping list to json
         with open("stats.json", "w", encoding = "utf-8") as f:
             f.write(json.dumps(self.stats, indent = 4))
         
