@@ -1,6 +1,5 @@
 """
-auth spencer-maaaaan
-desc bot that collects statistics based on emoji usage in participating server
+discord bot that collects statistics based on emoji usage in participating servers
 """
 import json, re, logging
 import discord
@@ -13,7 +12,7 @@ class Client(discord.Client):
         discord.Client.__init__(self)
         
         #loading json containing stats to dictionary
-        with open("stats.json", "r", encoding = "utf-8") as f:
+        with open("stats.json", "r") as f:
             self.stats = json.load(f)
 
 
