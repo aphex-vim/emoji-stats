@@ -63,7 +63,7 @@ class Client(discord.Client):
         
         #dumping list to json
         with open("stats.json", "w", encoding = "utf-8") as f:
-            f.write(json.dumps(self.stats, indent = 4))
+            f.write(json.dumps(self.stats))
         
 #init client object and starting the bot with secret token
 client = Client()
