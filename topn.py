@@ -6,12 +6,12 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-#pulling json into dictionary
-with open("stats.json", "r") as f:
-    stats = json.load(f)
 
-def top(title, guild, n):
+def topn(guildName, guildID, n):
     #sorting and trimming dict to be top n items
+    with open("stats.json", "r") as f:
+        guild = json.load(f)[guildID]
+    
     guild = sorted(guild.items(), key=lambda x: x[1])[:-n:-1]
     
     #defining axes
@@ -21,7 +21,7 @@ def top(title, guild, n):
 
     #init graph with colors
     plt.bar(x_pos, y, zorder=3, color="#6F85D2")
-    plt.title(title)
+    plt.title(guildName)
     plt.xticks(x_pos, x, rotation=90, ma="right")
     
     #placing value labels on each bar
@@ -37,10 +37,13 @@ def top(title, guild, n):
     #scaling view to include labels
     plt.tight_layout()
 
-    
     #saving figure
-    plt.savefig("./fig/"+title+".png")
+    figName = "./fig/"+guildName+".png"
+    plt.savefig(figName)
+
+    #returning figure location
+    return figName
 
 #driver code for now
 #eventually this will be imported into the bot and used to generate images at the will of a command
-top("yoshi", stats["417154708713635852"], 10)
+topn("yoshi", "417154708713635852", 10)

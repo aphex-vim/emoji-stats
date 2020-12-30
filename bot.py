@@ -25,7 +25,12 @@ class Client(discord.Client):
         if message.guild == None:
             logging.info("Ignoring DM from {0}".format(message.author))
             return
-        
+
+        #ignoring messages sent by bots
+        if message.author.bot:
+            logging.info("Ignoring bot message in {0}, {1}".format(message.guild.name, message.channel.name))
+            return
+
         #defining some variables for later use
         emojilist = list()
         guildID = str(message.guild.id)
@@ -61,7 +66,7 @@ class Client(discord.Client):
                 self.stats[guildID] = {emoji: 1}
         
         #dumping list to json
-        with open("stats.json", "w", encoding = "utf-8") as f:
+        with open("stats.json", "w") as f:
             f.write(json.dumps(self.stats))
         
 #init client object and starting the bot with secret token
