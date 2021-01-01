@@ -38,7 +38,7 @@ def topn(guildName, guildID, n):
     plt.tight_layout()
 
     #saving figure and clearing plot
-    figName = "./fig/"+guildName+".png"
+    figName = "./fig/"+guildID+".png"
     plt.savefig(figName)
     plt.cla()
 
