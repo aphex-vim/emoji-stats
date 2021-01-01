@@ -12,7 +12,7 @@ def topn(guildName, guildID, n):
     with open("stats.json", "r") as f:
         guild = json.load(f)[guildID]
     
-    guild = sorted(guild.items(), key=lambda x: x[1])[:-n+1:-1]
+    guild = sorted(guild.items(), key=lambda x: x[1])[:-n-1:-1]
     
     #defining axes
     x = [x[0] for x in guild]
