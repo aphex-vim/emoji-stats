@@ -4,6 +4,7 @@ discord bot that collects statistics based on emoji usage in participating serve
 import json, re, logging
 import discord
 import emojis
+from topn import topn
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,6 +31,9 @@ class Client(discord.Client):
         if message.author.bot:
             logging.info("Ignoring bot message in {0}, {1}".format(message.guild.name, message.channel.name))
             return
+
+        if message.content == "|top":
+            await message.channel.send(file=discord.File(topn(str(message.guild), str(message.guild.id), 10)))
 
         #defining some variables for later use
         emojilist = list()

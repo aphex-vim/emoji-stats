@@ -12,7 +12,7 @@ def topn(guildName, guildID, n):
     with open("stats.json", "r") as f:
         guild = json.load(f)[guildID]
     
-    guild = sorted(guild.items(), key=lambda x: x[1])[:-n:-1]
+    guild = sorted(guild.items(), key=lambda x: x[1])[:-n+1:-1]
     
     #defining axes
     x = [x[0] for x in guild]
@@ -37,13 +37,10 @@ def topn(guildName, guildID, n):
     #scaling view to include labels
     plt.tight_layout()
 
-    #saving figure
+    #saving figure and clearing plot
     figName = "./fig/"+guildName+".png"
     plt.savefig(figName)
+    plt.cla()
 
     #returning figure location
     return figName
-
-#driver code for now
-#eventually this will be imported into the bot and used to generate images at the will of a command
-topn("yoshi", "417154708713635852", 10)
