@@ -32,6 +32,7 @@ class Client(discord.Client):
             logging.info("Ignoring bot message in {0}, {1}".format(message.guild.name, message.channel.name))
             return
 
+        #if the message is a user requesting a graph, generate and send it
         if message.content == "|top":
             await message.channel.send(file=discord.File(topn(str(message.guild), str(message.guild.id), 10)))
 

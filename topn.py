@@ -20,13 +20,24 @@ def topn(guildName, guildID, n):
     x_pos = np.arange(len(x))
 
     #init graph with colors
+    params = {
+        "ytick.color" : "w",
+        "xtick.color" : "w",
+        "axes.labelcolor" : "w",
+        "axes.edgecolor" : "w"
+        }
+    
+    plt.rcParams.update(params)
+    
+    ax = plt.axes()
+    ax.set_facecolor("#40444B")
     plt.bar(x_pos, y, zorder=3, color="#6F85D2")
-    plt.title(guildName)
+    plt.title(guildName, color="w")
     plt.xticks(x_pos, x, rotation=90, ma="right")
     
     #placing value labels on each bar
     for i in range(len(y)):
-        plt.annotate(y[i], xy=(x_pos[i], y[i]), ha="center", va="bottom")
+        plt.annotate(y[i], xy=(x_pos[i], y[i]), ha="center", va="bottom", color="w")
 
     
     #setting yticks to reasonable amounts
@@ -39,7 +50,7 @@ def topn(guildName, guildID, n):
 
     #saving figure and clearing plot
     figName = "./fig/"+guildID+".png"
-    plt.savefig(figName)
+    plt.savefig(figName, facecolor="#36393F")
     plt.cla()
 
     #returning figure location
