@@ -39,6 +39,7 @@ class Client(discord.Client):
         #defining some variables for later use
         emojilist = list()
         guildID = str(message.guild.id)
+        authorID = str(message.author.id)
         partial_matches = 0
 
         #checking for custom/partial emoji in message
@@ -61,15 +62,20 @@ class Client(discord.Client):
             emoji = str(emoji)
             if guildID in self.stats:
                 
-                if emoji in self.stats[guildID]:
-                    self.stats[guildID][emoji] += 1
+                if authorID in self.stats[guildID]:
+                    
+                    if emoji in self.stats[guildID][authorID]:
+                        self.stats[guildID][authorID][emoji] += 1
+
+                    else:
+                        self.stats[guildID][authorID][emoji] = 1
 
                 else:
-                    self.stats[guildID][emoji] = 1
+                    self.stats[guildID][authorID] = {emoji: 1}
 
             else:
-                self.stats[guildID] = {emoji: 1}
-        
+                self.stats[guildID] = {authorID: {emoji: 1}}
+
         #dumping list to json
         with open("stats.json", "w") as f:
             f.write(json.dumps(self.stats))
