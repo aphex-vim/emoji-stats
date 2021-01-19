@@ -29,6 +29,7 @@ class Client(discord.Client):
                             #defining some variables for later use
                             emojilist = list()
                             guildID = str(message.guild.id)
+                            authorID = str(message.author.id)
                             partial_matches = 0
 
                             #checking for custom/partial emoji in message
@@ -44,21 +45,26 @@ class Client(discord.Client):
                                 emojilist.append(emoji)
 
                             if emojilist:
-                                logging.info("Message proccessed in guild {0}, channel {1}: {2} partials and {3} customs".format(str(message.guild), channel.name, partial_matches, len(custom_matches)))
+                                logging.info("Message proccessed in guild {0}, channel {1}, author {2}: {3} partials and {4} customs".format(str(message.guild), channel.name, str(message.author), partial_matches, len(custom_matches)))
 
                             #going through each emoji in the message and updating dictionary
                             for emoji in emojilist:
                                 emoji = str(emoji)
                                 if guildID in self.stats:
                                     
-                                    if emoji in self.stats[guildID]:
-                                        self.stats[guildID][emoji] += 1
+                                    if authorID in self.stats[guildID]:
+                                        
+                                        if emoji in self.stats[guildID][authorID]:
+                                            self.stats[guildID][authorID][emoji] += 1
+
+                                        else:
+                                            self.stats[guildID][authorID][emoji] = 1
 
                                     else:
-                                        self.stats[guildID][emoji] = 1
+                                        self.stats[guildID][authorID] = {emoji: 1}
 
                                 else:
-                                    self.stats[guildID] = {emoji: 1}
+                                    self.stats[guildID] = {authorID: {emoji: 1}}
                             
                             #dumping list to json
                             with open("stats.json", "w") as f:
