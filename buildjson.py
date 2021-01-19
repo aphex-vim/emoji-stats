@@ -1,12 +1,10 @@
-
-
-
 """
 script for building initial database, will look through message history in all available channels and build json
 """
-import json, re, logging
+import json, logging
 import discord
 import emojis
+from emojiget import emojiget
 
 logging.basicConfig(level=logging.INFO)
 
@@ -27,25 +25,14 @@ class Client(discord.Client):
                         if not message.author.bot:
                             
                             #defining some variables for later use
-                            emojilist = list()
                             guildID = str(message.guild.id)
                             authorID = str(message.author.id)
-                            partial_matches = 0
 
                             #checking for custom/partial emoji in message
-                            custom_matches = re.findall(r"<(a?):([0-9a-zA-Z]*):([0-9]{18})>", message.content)
-                            
-                            if custom_matches: 
-                                custom_matches = [i[1] for i in custom_matches]
-                                emojilist.extend(custom_matches)
-                                    
-                            for emoji in emojis.iter(message.content):
-                                partial_matches += 1
-                                emoji = emojis.decode(emoji).replace(":", "")
-                                emojilist.append(emoji)
+                            emojilist = emojiget(message.content)
 
                             if emojilist:
-                                logging.info("Message proccessed in guild {0}, channel {1}, author {2}: {3} partials and {4} customs".format(str(message.guild), channel.name, str(message.author), partial_matches, len(custom_matches)))
+                                logging.info("Message proccessed in guild {0}, channel {1}, author {2}: {3} emojis".format(str(message.guild), message.channel.name, str(message.author), len(emojilist)))
 
                             #going through each emoji in the message and updating dictionary
                             for emoji in emojilist:

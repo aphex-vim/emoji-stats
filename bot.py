@@ -1,10 +1,11 @@
 """
 discord bot that collects statistics based on emoji usage in participating servers
 """
-import json, re, logging
+import json, logging
 import discord
 import emojis
 from topn import topn
+from emojiget import emojiget
 
 logging.basicConfig(level=logging.INFO)
 
@@ -37,25 +38,14 @@ class Client(discord.Client):
             await message.channel.send(file=discord.File(topn(str(message.guild), str(message.guild.id), 10)))
 
         #defining some variables for later use
-        emojilist = list()
         guildID = str(message.guild.id)
         authorID = str(message.author.id)
-        partial_matches = 0
 
         #checking for custom/partial emoji in message
-        custom_matches = re.findall(r"<(a?):([0-9a-zA-Z]*):([0-9]{18})>", message.content)
-        
-        if custom_matches: 
-            custom_matches = [i[1] for i in custom_matches]
-            emojilist.extend(custom_matches)
-                
-        for emoji in emojis.iter(message.content):
-            partial_matches += 1
-            emoji = emojis.decode(emoji).replace(":", "")
-            emojilist.append(emoji)
+        emojilist = emojiget(message.content)
 
         if emojilist:
-            logging.info("Message proccessed in guild {0}, {1} partials and {2} customs".format(str(message.guild), partial_matches, len(custom_matches)))
+            logging.info("Message proccessed in guild {0}, channel {1}, author {2}: {3} emojis".format(str(message.guild), message.channel.name, str(message.author), len(emojilist)))
         
         #going through each emoji in the message and updating dictionary
         for emoji in emojilist:
