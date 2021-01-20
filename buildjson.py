@@ -19,7 +19,7 @@ class Client(discord.Client):
         #going through every channel in every guild the bot is in
         for guild in self.guilds:
             for channel in guild.text_channels:                
-                    for message in await channel.history(limit=10000).flatten():
+                    for message in await channel.history(limit=None).flatten():
                         
                         #making music bots are ignored
                         if not message.author.bot:
