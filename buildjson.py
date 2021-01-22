@@ -1,7 +1,7 @@
 """
 script for building initial database, will look through message history in all available channels and build json
 """
-import json, logging
+import json, datetime, pickle, os, logging
 import discord
 import emojis
 from emojiget import emojiget
@@ -16,12 +16,25 @@ class Client(discord.Client):
     async def on_ready(self):
         logging.info("Logged in as {0}".format(self.user))
 
+        #loading up existing dictionary
+        if os.path.exists("stats.json"):
+            with open("stats.json", "r") as f:
+                self.stats = json.load(f)
+
+        #determining how far to look back
+        if os.path.exists("timelastscanned.dat"):
+            with open("timelastscanned.dat", "rb") as f:
+                lastscanned = pickle.load(f)
+
+        else:
+            lastscanned = None
+
         #going through every channel in every guild the bot is in
         for guild in self.guilds:
             for channel in guild.text_channels:                
-                    for message in await channel.history(limit=None).flatten():
+                    for message in await channel.history(limit=None, after=lastscanned).flatten():
                         
-                        #making music bots are ignored
+                        #making sure music bots are ignored
                         if not message.author.bot:
                             
                             #defining some variables for later use
@@ -53,6 +66,11 @@ class Client(discord.Client):
                                 else:
                                     self.stats[guildID] = {authorID: {emoji: 1}}
                             
+                                #storing time message was scanned to eliminate the need to scan a message more than once
+                                with open("timelastscanned.dat", "wb") as f:
+                                    pickle.dump(datetime.datetime.utcnow(), f)
+
+
                             #dumping list to json
                             with open("stats.json", "w") as f:
                                 f.write(json.dumps(self.stats))
