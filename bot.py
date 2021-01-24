@@ -30,7 +30,7 @@ class Client(discord.Client):
         #loading up set of channels that existed on last run
         if os.path.exists("cached_channels.dat"):
             with open("cached_channels.dat", "rb") as f:
-                cached_channels = pickle.load(f)
+                self.cached_channels = pickle.load(f)
 
             #forming a set of channels that are new since the last time the bot was online
             present_channels = set()
@@ -39,7 +39,7 @@ class Client(discord.Client):
                 for chan in guild.text_channels:
                     present_channels.add(chan.id)
 
-            new_channels = present_channels.difference(cached_channels)
+            new_channels = present_channels.difference(self.cached_channels)
 
             #iterating through all new channels and scrubbing them from their beginnings
             for chanID in new_channels:
@@ -52,19 +52,19 @@ class Client(discord.Client):
 
         #assuming this file doesn't exist, all channels should be scrubbed
         else:
-            cached_channels = set()
+            self.cached_channels = set()
             
             for guild in self.guilds:
                 for chan in guild.text_channels:
-                    cached_channels.add(chan.id)
+                    self.cached_channels.add(chan.id)
                     
             #writing channels to cache
             with open("cached_channels.dat", "wb") as f:
-                pickle.dump(cached_channels, f)
+                pickle.dump(self.cached_channels, f)
                     
             
             #iterating through every now-cached channel and scanning from their beginnings
-            for chanID in cached_channels:
+            for chanID in self.cached_channels:
                 chan = await self.fetch_channel(chanID)
                 await self.scrub_history(chan, None)
 
@@ -143,6 +143,17 @@ class Client(discord.Client):
         #ignoring messages sent by bots
         if message.author.bot:
             logging.info("Ignoring bot message in {0}, {1}".format(message.guild.name, message.channel.name))
+            return
+
+        #if messages is from a new channel, scrubbing it
+        if message.channel.id not in self.cached_channels:
+            await self.scrub_history(message.channel, None)
+            
+            #writing new channel to cache
+            with open("cached_channels.dat", "wb") as f:
+                self.cached_channels.add(message.channel.id)
+                pickle.dump(self.cached_channels, f)
+            
             return
 
         #if the message is a user requesting a graph, generate and send it
