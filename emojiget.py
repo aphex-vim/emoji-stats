@@ -12,7 +12,7 @@ def emojiget(string):
     partial_matches = 0
 
     # checking for custom discord emojis
-    custom_matches = re.findall(r"<(a?):([0-9a-zA-Z]*):([0-9]{18})>", string)    
+    custom_matches = re.findall(r"<(a?):(\w*):(\d{18})>", string)    
     if custom_matches: 
         custom_matches = [i[1] for i in custom_matches]
         emojilist.extend(custom_matches)
