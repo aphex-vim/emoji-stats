@@ -42,8 +42,8 @@ def topn(guildName, guildID, n):
     plt.rcParams.update(params)
     
     ax = plt.axes()
-    ax.set_facecolor("# 40444B")
-    plt.bar(x_pos, y, zorder=3, color="# 6F85D2")
+    ax.set_facecolor("#40444B")
+    plt.bar(x_pos, y, zorder=3, color="#6F85D2")
     plt.title(guildName, color="w")
     plt.xticks(x_pos, x, rotation=90, ma="right")
     
@@ -62,7 +62,7 @@ def topn(guildName, guildID, n):
 
     # saving figure and clearing plot
     figName = "./fig/"+guildID+".png"
-    plt.savefig(figName, facecolor="# 36393F")
+    plt.savefig(figName, facecolor="#36393F")
     plt.cla()
 
     # returning figure location
