@@ -2,5 +2,6 @@ __pycache__
 token
 stats.json
 fig
+csv
 time_last_scanned.dat
 cached_channels.dat
